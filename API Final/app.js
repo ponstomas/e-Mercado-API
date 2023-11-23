@@ -1,11 +1,37 @@
 const express = require("express"); 
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
+const bodyParser = require("body-parser");
+const SECRET_KEY = "CLAVE ULTRA SECRETA";
 
 const app = express();
 const port = 3000;
 
 app.use(express.json()); 
 app.use(cors());
+
+// Auth
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
+  if (username === "admin@a.com" && password === "admin1234") {
+    const token = jwt.sign({ username }, SECRET_KEY);
+    res.status(200).json({ token });
+  } else {
+    res.status(401).json({ message: "Usuario y/o contraseña incorrecto" });
+  }
+});
+
+// Middleware que autoriza a realizar peticiones a /cart
+app.use("/cart", (req, res, next) => {
+  try {
+    const decoded = jwt.verify(req.headers["access-token"], SECRET_KEY);
+    console.log(decoded);
+    next();
+  } catch (err) {
+    res.status(401).json({ message: "Usuario no autorizado" });
+  }
+});
+
 
 app.get("/", (req, res) => {
   res.send("<h1>Bienvenid@ al servidor</h1>");
@@ -43,6 +69,11 @@ app.get("/products_comments/:id", (req, res) => {
   const productsComments = require(`./json/products_comments/${req.params.id}`)
   res.json(productsComments); 
 });
+
+//Cart
+app.get("/cart", (req, res) => {
+  res.json(cart)
+})
 
 
 
