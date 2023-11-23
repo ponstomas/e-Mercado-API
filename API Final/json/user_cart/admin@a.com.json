@@ -1,0 +1,13 @@
+{
+  "user": "admin@a.com",
+  "articles": [
+    {
+      "id": 23049,
+      "name": "a",
+      "count": 1,
+      "unitCost": 15200,
+      "currency": "USD",
+      "image": "img/prod50924_1.jpg"
+    }
+  ]
+}

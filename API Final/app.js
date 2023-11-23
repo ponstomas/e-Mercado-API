@@ -1,7 +1,7 @@
 const express = require("express"); 
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
-const bodyParser = require("body-parser");
+const fs = require("fs");
 const SECRET_KEY = "CLAVE ULTRA SECRETA";
 
 const app = express();
@@ -41,6 +41,7 @@ const cart = require("./json/cart/buy.json");
 const sell = require("./json/sell/publish.json");
 const cats = require("./json/cats/cat.json"); 
 const userCart = require("./json/user_cart/25801.json");
+const { json } = require("body-parser");
 
 
 //Categories
@@ -73,6 +74,17 @@ app.get("/products_comments/:id", (req, res) => {
 //Cart
 app.get("/cart", (req, res) => {
   res.json(cart)
+})
+
+app.post("/cart", (req, res) => {
+  const data = JSON.stringify(req.body, null, 2);
+  const filePath = `./json/user_cart/${req.body.user}.json`;
+
+  fs.writeFile(filePath, data, function (err) {
+    if (err) throw err;
+    console.log('Saved!');
+  });
+  res.send("Guardado correctamente")
 })
 
 
